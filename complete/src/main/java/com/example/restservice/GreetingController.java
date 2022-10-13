@@ -2,14 +2,17 @@ package com.example.restservice;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+//@RestController
+@Controller
+@RequestMapping(path="/api")
 public class GreetingController {
 
+    @Autowired
+    private GameRepository gameRepository;
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
@@ -18,8 +21,19 @@ public class GreetingController {
         return new Greeting(counter.incrementAndGet(), String.format(template, name));
     }
 
-    @PostMapping("/api/create")
-    public Game createGame() {
-        return new Game(counter.incrementAndGet(), "Test");
+    @PostMapping("/create")
+//    public Game createGame() {
+//        return new Game(counter.incrementAndGet(), "Test");
+//    }
+    public @ResponseBody String addNewGame(@RequestParam String name) {
+        Game game = new Game();
+        game.setName(name);
+        gameRepository.save(game);
+        return "Saved";
+    }
+
+    @GetMapping(path="/all")
+    public @ResponseBody Iterable<Game> getAllGames() {
+        return gameRepository.findAll();
     }
 }
