@@ -1,4 +1,4 @@
-package com.example.restservice;
+package com.example.restservice.game;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
